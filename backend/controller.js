@@ -48,7 +48,7 @@ await quirypromise("INSERT INTO game (firstname, lastname, email,phonenumber, pa
 }
 ///////////////////////////api-for-login/////////////////////////////////////////////////
 const login=async(req,res)=>{
-  
+
     const { email, password } = req.body;
 try {
         const result = await quirypromise("SELECT * FROM game WHERE email = ?", [email]);
@@ -65,7 +65,7 @@ if      (isMatch) {
         username: game.firstname,
         userId: game.id,
         access: game.access
-    },process.env.JWT_SECRET,{ expiresIn: '1h' } )
+    },"ashu@123",{ expiresIn: '1h' } )
    
 //   res.status(200).json({msg:`hey you Login successfully ${game.firstname} `,token:token,userId:game.id});
     
