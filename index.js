@@ -25,7 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Routes
-const router = require("./routes/router");
+const router = require("./backend/routes/router");
 app.use("/", router);
 
 // Create server
