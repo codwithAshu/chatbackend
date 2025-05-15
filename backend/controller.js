@@ -39,7 +39,7 @@ try {
     const decodetoken=jwt.decode(token)
     const usernamefromtoken= decodetoken?.username;
 
-await quirypromise("INSERT INTO game (firstname, lastname, email,phonenumber, password ,jwt) VALUES (?, ?, ?, ?,?,?)", 
+await quirypromise("INSERT INTO users (firstname, lastname, email,phonenumber, password ,jwt) VALUES (?, ?, ?, ?,?,?)", 
       [firstName, lastName, email,phoneNumber, hashedPassword,usernamefromtoken]);
         res.status(201).json({msg:`hey ${firstName} ${lastName} your account is successfully created`,token:token,userId:id});
 } catch (err) {
@@ -51,7 +51,7 @@ const login=async(req,res)=>{
 
     const { email, password } = req.body;
 try {
-        const result = await quirypromise("SELECT * FROM game WHERE email = ?", [email]);
+        const result = await quirypromise("SELECT * FROM users WHERE email = ?", [email]);
         console.log("result",result)
 if      (result.length === 0) {
             return res.status(400).json({ error: "Invalid email" });   
@@ -84,7 +84,7 @@ const getAllData = async (req, res) => {
     const userId = req.params.id;
     console.log("userid",userId);
      try{
-    const userResult = await quirypromise("SELECT access FROM game WHERE id = ?", [userId]);
+    const userResult = await quirypromise("SELECT access FROM users WHERE id = ?", [userId]);
     if (userResult.length === 0||userResult.length===null) {
         console.log("user not found");
         return res.status(404).json({ message: 'User not found' });
@@ -142,7 +142,7 @@ if(access){
 }
 value.push(id)
 try {
-    const query = `UPDATE game SET ${updates.join(',')}WHERE id = ?`;//.join converts into string and , seperate them  
+    const query = `UPDATE users SET ${updates.join(',')}WHERE id = ?`;//.join converts into string and , seperate them  
     const result= await quirypromise(query,value)
       if (result.affectedRows === 0) {
         return res.status(404).json({ message: 'User not found' });
@@ -155,7 +155,7 @@ try {
 const del=async(req,res)=>{  
     const { id } = req.params;
 try {
-    const userResult = await quirypromise("SELECT * FROM game WHERE id = ?", [id]);
+    const userResult = await quirypromise("SELECT * FROM users WHERE id = ?", [id]);
 if   (userResult.length === 0) {
         return res.status(404).json({ message: 'User not found' });
 }
@@ -174,7 +174,7 @@ if  (!phoneNumberInt) {
         from: '+13203563459'  
     });
 ///////////
-    const deleteResult = await quirypromise("DELETE FROM game WHERE id=?", [id]);
+    const deleteResult = await quirypromise("DELETE FROM users WHERE id=?", [id]);
 if   (deleteResult.affectedRows === 0) {
         return res.status(404).json({ message: 'Player not found' });
 }
@@ -210,7 +210,7 @@ const displaydata=async(req,res)=>{
     const{id}=req.params
     try {
         // const data=await quirypromise(`select * from `)
-        const result=await quirypromise(`select a.id,a.firstname,a.email,a.phonenumber,c.routeName from game as a
+        const result=await quirypromise(`select a.id,a.firstname,a.email,a.phonenumber,c.routeName from users as a
             inner JOIN route_access as b
             on a.id=b.user_id
             inner join route as c
@@ -230,7 +230,7 @@ const forgotPassword = async (req, res) => {
     
     try {
       // Check if the user exists
-      const result = await quirypromise('SELECT * FROM game WHERE email = ?', [email]);
+      const result = await quirypromise('SELECT * FROM users WHERE email = ?', [email]);
       if (result.length === 0) {
         return res.status(404).json({ message: 'User not found' });
       }
@@ -282,7 +282,7 @@ console.log("user",user);
     //   const decoded = jwt.verify(token, process.env.JWT_SECRET);
   
       // Check if user exists
-      const result = await quirypromise('SELECT * FROM game WHERE email = ?', [email]);
+      const result = await quirypromise('SELECT * FROM users WHERE email = ?', [email]);
   
       if (result.length === 0) {
         return res.status(404).json({ message: 'User not found' });
@@ -294,7 +294,7 @@ console.log("user",user);
       const hashedPassword = await bcrypt.hash(newPassword, 10);
   
       // Update the password in the database
-      await quirypromise('UPDATE game SET password = ? WHERE email = ?', [hashedPassword, email]);
+      await quirypromise('UPDATE users SET password = ? WHERE email = ?', [hashedPassword, email]);
   
       res.status(200).json({ message: 'Your password has been successfully reset.' });
     } catch (error) {

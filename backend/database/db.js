@@ -1,12 +1,13 @@
-require('dotenv').config();
+
 const mysql=require("mysql");
 const dotenv = require('dotenv');
 dotenv.config();
 const con=mysql.createConnection({
-    host: "localhost", 
-    user: "root",
-  password: "Prep@123",
-  database: "nodejs_login"
+    host: "be0k9n3uy2qosywlrqzv-mysql.services.clever-cloud.com", 
+    user: "uxpgrrbk8ji6bypf",
+  password: "hnGxbZpodfNKDBCOcGNf",
+  database: "be0k9n3uy2qosywlrqzv",
+  PORT:3306
 });
 con.connect((err)=>{
     if(err){
@@ -19,7 +20,10 @@ con.connect((err)=>{
 module.exports=con;
 
 
-
+//  
+// user: "u6ndrsboqpco7bt7",
+// password: "dfVT2CiwrvQqFr2wCibw",
+// database: "b1oyljmp0fs7kgkizmcy",
 // host: process.env.DB_HOST, 
 // user: process.env.DB_USER,
 // password: process.env.DB_PASSWORD,
@@ -36,7 +40,3 @@ module.exports=con;
 // password: "Prep@123",
 // database: "nodejs_login"
   
-//   host: "mydb.cxcsmsq8mzqy.ap-south-1.rds.amazonaws.com", 
-//   user: "admin",
-// password: "ashu1234",
-// database: "nodejs_login"
