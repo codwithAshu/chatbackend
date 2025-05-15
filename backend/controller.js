@@ -50,6 +50,7 @@ await quirypromise("INSERT INTO users (firstname, lastname, email,phonenumber, p
 const login=async(req,res)=>{
 
     const { email, password } = req.body;
+    
 try {
         const result = await quirypromise("SELECT * FROM users WHERE email = ?", [email]);
         console.log("result",result)
@@ -57,7 +58,7 @@ if      (result.length === 0) {
             return res.status(400).json({ error: "Invalid email" });   
         }
         const game = result[0];
-        const isMatch = await bcrypt.compare(password, game.password);
+        const isMatch = await (password, game.password);
 if      (isMatch) {
   
   

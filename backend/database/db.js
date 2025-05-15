@@ -3,11 +3,14 @@ const mysql=require("mysql");
 const dotenv = require('dotenv');
 dotenv.config();
 const con=mysql.createConnection({
+    connectionLimit: 10,
     host: "be0k9n3uy2qosywlrqzv-mysql.services.clever-cloud.com", 
     user: "uxpgrrbk8ji6bypf",
   password: "hnGxbZpodfNKDBCOcGNf",
   database: "be0k9n3uy2qosywlrqzv",
-  PORT:3306
+  PORT:3306,
+  connectTimeout: 1000000,
+  acquireTimeout: 1000000
 });
 con.connect((err)=>{
     if(err){
