@@ -43,7 +43,7 @@ try {
 
 await quirypromise("INSERT INTO users (firstname,email,phonenumber,password, userName ,jwt) VALUES (?, ?, ?, ?,?,?)", 
       [fullName,  email,phonenumber, hashedPassword,username,usernamefromtoken]);
-        res.status(201).json({msg:`your account is successfully created ${fullName}  `});
+        res.status(201).json({msg:`your account is successfully created ${fullName}  `},{message:"created"});
 } catch (err) {
         console.error("Error hashing password or inserting user:", err);
         res.status(500).send("Error saving user data")}
@@ -60,6 +60,8 @@ if      (result.length === 0) {
             return res.status(400).json({ error: "Invalid email" });   
         }
         const game = result[0];
+        console.log("game",game);
+        
         const isMatch = await (password, game.password);
 if      (isMatch) {
   
@@ -72,7 +74,7 @@ if      (isMatch) {
    
 //   res.status(200).json({msg:`hey you Login successfully ${game.firstname} `,token:token,userId:game.id});
     
- res.status(200).send({ msg: `you Login successfully ${game.firstname}`, gameId: game.id ,Name:game.firstname,access: game.access,token});
+ res.status(200).send({ msg: `you Login successfully ${game.firstname}`, username: game.username ,Name:game.firstname,access: game.access,token});
     
         }else  {
         
