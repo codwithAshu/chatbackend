@@ -28,20 +28,22 @@ try{
 }}
 ///////////////////////////////////api-for-insert-data///////////////////////////////////////////////////
 const insert=async(req,res)=>{
-    const { firstName, lastName, email,phoneNumber, password, id } = req.body; 
+    const { email,phonenumber, password,fullName,username, id } = req.body; 
+    console.log("JWT_SECRET:", process.env.JWT_SECRET);
+
     const token= jwt.sign({
-        username: firstName,//pay load means the data of that user u want to share
+        userName: fullName,//pay load means the data of that user u want to share
         // userId: game.id,
         // access: email
-    },process.env.JWT_SECRET,{ expiresIn: '1h' } ) //jwt_secret=signature write anything in env,exp it will expire this in 1h 
+    },"ashu@123",{ expiresIn: '1h' } ) //jwt_secret=signature write anything in env,exp it will expire this in 1h 
 try {
     const hashedPassword = await bcrypt.hash(password, 10);
     const decodetoken=jwt.decode(token)
-    const usernamefromtoken= decodetoken?.username;
+    const usernamefromtoken= decodetoken?.userName;
 
-await quirypromise("INSERT INTO users (firstname, lastname, email,phonenumber, password ,jwt) VALUES (?, ?, ?, ?,?,?)", 
-      [firstName, lastName, email,phoneNumber, hashedPassword,usernamefromtoken]);
-        res.status(201).json({msg:`hey ${firstName} ${lastName} your account is successfully created`,token:token,userId:id});
+await quirypromise("INSERT INTO users (firstname,email,phonenumber,password, userName ,jwt) VALUES (?, ?, ?, ?,?,?)", 
+      [fullName,  email,phonenumber, hashedPassword,username,usernamefromtoken]);
+        res.status(201).json({msg:`hey ${fullName}  your account is successfully created`,token:token,userId:id});
 } catch (err) {
         console.error("Error hashing password or inserting user:", err);
         res.status(500).send("Error saving user data")}
@@ -164,14 +166,14 @@ if   (userResult.length === 0) {
   
     const name = user.firstname; 
     const phonenumber = `91${user.phonenumber}`; 
-    const phoneNumberInt = parseInt(phonenumber, 10);    
-if  (!phoneNumberInt) {
+    const phonenumberInt = parseInt(phonenumber, 10);    
+if  (!phonenumberInt) {
         return res.status(400).json({ message: 'User does not have a phone number associated with their account' });
 }
 /////for msg connection///////
     const message = await client.messages.create({
         body: `Dear ${name},\n\n We would like to inform you that your account will be deleted shortly by an admin.\n\nBest regards, The Admin Team.`,
-        to: `+${phoneNumberInt}`,  
+        to: `+${phonenumberInt}`,  
         from: '+13203563459'  
     });
 ///////////
