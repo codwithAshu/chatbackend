@@ -43,7 +43,7 @@ try {
 
 await quirypromise("INSERT INTO users (firstname,email,phonenumber,password, userName ,jwt) VALUES (?, ?, ?, ?,?,?)", 
       [fullName,  email,phonenumber, hashedPassword,username,usernamefromtoken]);
-        res.status(201).json({msg:`your account is successfully created ${fullName}  `,token:token,userId:id});
+        res.status(201).json({msg:`your account is successfully created ${fullName}  `});
 } catch (err) {
         console.error("Error hashing password or inserting user:", err);
         res.status(500).send("Error saving user data")}
