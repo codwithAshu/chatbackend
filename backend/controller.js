@@ -29,7 +29,7 @@ try{
 ///////////////////////////////////api-for-insert-data///////////////////////////////////////////////////
 const insert=async(req,res)=>{
     const { email,phonenumber, password,fullName,username, id } = req.body; 
-    console.log("JWT_SECRET:", process.env.JWT_SECRET);
+    console.log("req.body:", req.body);
 
     const token= jwt.sign({
         userName: fullName,//pay load means the data of that user u want to share
@@ -43,10 +43,10 @@ try {
 
 await quirypromise("INSERT INTO users (firstname,email,phonenumber,password, userName ,jwt) VALUES (?, ?, ?, ?,?,?)", 
       [fullName,  email,phonenumber, hashedPassword,username,usernamefromtoken]);
-        res.status(201).json({msg:`your account is successfully created ${fullName}  `},{message:"created"});
+        res.status(201).json({msg:`your account is successfully created ${fullName}  `});
 } catch (err) {
         console.error("Error hashing password or inserting user:", err);
-        res.status(500).send("Error saving user data")}
+        res.status(500).send(err,"error saving data")}
 }
 ///////////////////////////api-for-login/////////////////////////////////////////////////
 const login=async(req,res)=>{
@@ -69,12 +69,12 @@ if      (isMatch) {
     const token=jwt.sign({
         username: game.firstname,
         userId: game.id,
-        access: game.access
     },"ashu@123",{ expiresIn: '1h' } )
    
 //   res.status(200).json({msg:`hey you Login successfully ${game.firstname} `,token:token,userId:game.id});
     
- res.status(200).send({ msg: `you Login successfully ${game.firstname}`, username: game.username ,Name:game.firstname});
+ res.status(200).send({ msg: `you Login successfully ${game.firstname}`, username: game.userName ,Name:game.firstname});
+    console.log("res",game.userName);
     
         }else  {
         
