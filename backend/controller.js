@@ -74,7 +74,7 @@ if      (isMatch) {
    
 //   res.status(200).json({msg:`hey you Login successfully ${game.firstname} `,token:token,userId:game.id});
     
- res.status(200).send({ msg: `you Login successfully ${game.firstname}`, username: game.username ,Name:game.firstname,access: game.access,token});
+ res.status(200).send({ msg: `you Login successfully ${game.firstname}`, username: game.username ,Name:game.firstname});
     
         }else  {
         
