@@ -11,6 +11,7 @@ const PORT = process.env.PORT || 2020;
 // CORS config (place early to affect both HTTP and WebSocket)
 const corsOptions = {
   origin: [
+    "*",
     "https://heroic-fairy-60c220.netlify.app",
     "http://heroic-fairy-60c220.netlify.app",
     "http://localhost:5173"
@@ -44,6 +45,7 @@ io.on("connection", (socket) => {
   socket.emit('welcome', 'Welcome to the chat!');
 
   socket.on('register', (username) => {
+    username = username.toLowerCase();
     users[username] = socket.id;
     console.log('✅ Registered:', username, socket.id);
 
@@ -58,8 +60,9 @@ io.on("connection", (socket) => {
   });
 
   socket.on('sendMessage', (msg) => {
+    const recipient = msg.recipient.toLowerCase();
     const recipientSocketId = users[msg.recipient];
-    console.log("📩 Message from", msg.sender, "to", msg.recipient, ":", msg.text);
+    console.log("📩 Message from", msg.sender, "to", recipient, ":", msg.text);
     if (recipientSocketId) {
       io.to(recipientSocketId).emit('sendMessage', msg);
     }

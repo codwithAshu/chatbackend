@@ -2,7 +2,7 @@
 const mysql=require("mysql");
 const dotenv = require('dotenv');
 dotenv.config();
-const con=mysql.createConnection({
+const con=mysql.createPool({
     connectionLimit: 10,
     host: "be0k9n3uy2qosywlrqzv-mysql.services.clever-cloud.com", 
     user: "uxpgrrbk8ji6bypf",
@@ -12,7 +12,7 @@ const con=mysql.createConnection({
   connectTimeout: 1000000,
   acquireTimeout: 1000000
 });
-con.connect((err)=>{
+con.getConnection((err)=>{
     if(err){
         console.log("error",err);
     }else{
