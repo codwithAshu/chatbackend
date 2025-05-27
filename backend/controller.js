@@ -1,5 +1,5 @@
 require('dotenv').config();
-const con=require("./database/db")
+const queryPromise=require("./database/db")
 const bcrypt = require("bcrypt");
 const jwt=require("jsonwebtoken")
 
@@ -11,7 +11,7 @@ const jwt=require("jsonwebtoken")
 ///////promise//////
 const quirypromise=(qs,val)=>{
     return new Promise((res,rej)=>{
-        con.query(qs,val,(err,result)=>{
+        queryPromise.query(qs,val,(err,result)=>{
             if(err){
                 rej(err)
             }else{

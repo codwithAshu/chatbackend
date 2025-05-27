@@ -1,45 +1,28 @@
-
-const mysql=require("mysql");
-const dotenv = require('dotenv');
+const mysql = require("mysql");
+const util = require("util");
+const dotenv = require("dotenv");
 dotenv.config();
-const con=mysql.createPool({
-    connectionLimit: 10,
-    host: "be0k9n3uy2qosywlrqzv-mysql.services.clever-cloud.com", 
-    user: "uxpgrrbk8ji6bypf",
+
+const pool = mysql.createPool({
+  connectionLimit: 10,
+  host: "be0k9n3uy2qosywlrqzv-mysql.services.clever-cloud.com",
+  user: "uxpgrrbk8ji6bypf",
   password: "hnGxbZpodfNKDBCOcGNf",
   database: "be0k9n3uy2qosywlrqzv",
-  PORT:3306,
-  connectTimeout: 1000000,
-  acquireTimeout: 1000000
+  port: 3306,
+  connectTimeout: 10000,
+  acquireTimeout: 10000,
 });
-con.getConnection((err)=>{
-    if(err){
-        console.log("error",err);
-    }else{
-        console.log("connected to database"); 
-    }
-})
 
-module.exports=con;
+const queryPromise = util.promisify(pool.query).bind(pool);
 
+// ✅ Test connection when app starts
+queryPromise("SELECT 1")
+  .then(() => {
+    console.log("✅ Connected to database successfully!");
+  })
+  .catch((err) => {
+    console.error("❌ Error connecting to database:", err);
+  });
 
-//  
-// user: "u6ndrsboqpco7bt7",
-// password: "dfVT2CiwrvQqFr2wCibw",
-// database: "b1oyljmp0fs7kgkizmcy",
-// host: process.env.DB_HOST, 
-// user: process.env.DB_USER,
-// password: process.env.DB_PASSWORD,
-// database: process.env.DB_NAME
-
-
-
-
-
-
-
-//   host: "localhost", 
-//   user: "root",
-// password: "Prep@123",
-// database: "nodejs_login"
-  
+module.exports = queryPromise;
