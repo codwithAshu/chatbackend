@@ -27,27 +27,33 @@ try{
     res.status(500).send({ error: "An error occurred while fetching data." })
 }}
 ///////////////////////////////////api-for-insert-data///////////////////////////////////////////////////
-const insert=async(req,res)=>{
-    const { email,phonenumber, password,fullName,username, id } = req.body; 
-    console.log("req.body:", req.body);
+console.time("InsertUser");
+const insert = async (req, res) => {
+  console.time("HashingAndInsert");
 
-    const token= jwt.sign({
-        userName: fullName,//pay load means the data of that user u want to share
-        // userId: game.id,
-        // access: email
-    },"ashu@123",{ expiresIn: '1h' } ) //jwt_secret=signature write anything in env,exp it will expire this in 1h 
-try {
+  const { email, phonenumber, password, fullName, username } = req.body;
+  const token = jwt.sign({ userName: fullName }, "ashu@123", { expiresIn: '1h' });
+
+  try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const decodetoken=jwt.decode(token)
-    const usernamefromtoken= decodetoken?.userName;
 
-await quirypromise("INSERT INTO users (firstname,email,phonenumber,password, userName ,jwt) VALUES (?, ?, ?, ?,?,?)", 
-      [fullName,  email,phonenumber, hashedPassword,username,usernamefromtoken]);
-        res.status(201).json({msg:`your account is successfully created ${fullName}  `});
-} catch (err) {
-        console.error("Error hashing password or inserting user:", err);
-        res.status(500).send(err,"error saving data")}
-}
+    console.timeLog("HashingAndInsert", "Password hashed");
+
+    await quirypromise(
+      "INSERT INTO users (firstname,email,phonenumber,password, userName ,jwt) VALUES (?, ?, ?, ?,?,?)",
+      [fullName, email, phonenumber, hashedPassword, username, fullName]
+    );
+
+    console.timeEnd("HashingAndInsert");
+    res.status(201).json({ msg: `your account is successfully created ${fullName}` });
+  } catch (err) {
+    console.error("Error hashing password or inserting user:", err);
+    res.status(500).send("Error saving data");
+  }
+
+  console.timeEnd("InsertUser");
+};
+
 ///////////////////////////api-for-login/////////////////////////////////////////////////
 const login=async(req,res)=>{
 
