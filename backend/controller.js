@@ -27,7 +27,6 @@ try{
     res.status(500).send({ error: "An error occurred while fetching data." })
 }}
 ///////////////////////////////////api-for-insert-data///////////////////////////////////////////////////
-console.time("InsertUser");
 const insert = async (req, res) => {
   console.time("HashingAndInsert");
 
@@ -50,8 +49,6 @@ const insert = async (req, res) => {
     console.error("Error hashing password or inserting user:", err);
     res.status(500).send("Error saving data");
   }
-
-  console.timeEnd("InsertUser");
 };
 
 ///////////////////////////api-for-login/////////////////////////////////////////////////
