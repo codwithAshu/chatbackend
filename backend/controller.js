@@ -47,6 +47,7 @@ const insert = async (req, res) => {
 
 ///////////////////////////api-for-login/////////////////////////////////////////////////
 const login=async(req,res)=>{
+console.log("hye");
 
     const { email, password } = req.body;
     
@@ -59,10 +60,11 @@ if      (result.length === 0) {
         const game = result[0];
         console.log("game",game);
         
-        const isMatch = await (password, game.password);
+        const isMatch = await bcrypt.compare(password, game.password);
+console.log("game.password",password);
+console.log("game.password",game.password);
+
 if      (isMatch) {
-  
-  
     const token=jwt.sign({
         username: game.firstname,
         userId: game.id,
@@ -71,9 +73,9 @@ if      (isMatch) {
 //   res.status(200).json({msg:`hey you Login successfully ${game.firstname} `,token:token,userId:game.id});
     
  res.status(200).send({ msg: `you Login successfully ${game.firstname}`, username: game.userName ,Name:game.firstname});
-    console.log("res",game.userName);
     
-        }else  {
+        }
+        else  {
         
          res.send({ msg: `you entered Incorrect password ${game.firstname} ` });
         }
