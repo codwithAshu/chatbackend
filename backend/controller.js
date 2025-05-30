@@ -75,10 +75,7 @@ if      (isMatch) {
  res.status(200).send({ msg: `you Login successfully ${game.firstname}`, username: game.userName ,Name:game.firstname});
     
         }
-        else  {
-        
-    
-        }
+       
 } catch (err) {
         console.log("Login error:", err);
         res.status(500).send({ msg: `you entered Incorrect password ${game.firstname} ` });
