@@ -30,6 +30,8 @@ try{
 const insert = async (req, res) => {
   const { email, phonenumber, password, fullName, username } = req.body;
   const token = jwt.sign({ userName: fullName }, "ashu@123", { expiresIn: '1h' });
+  console.log("pass",password);
+  
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     await quirypromise(
