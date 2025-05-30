@@ -77,11 +77,11 @@ if      (isMatch) {
         }
         else  {
         
-         res.send({ msg: `you entered Incorrect password ${game.firstname} ` });
+    
         }
 } catch (err) {
         console.log("Login error:", err);
-        res.status(500).send({ error: "An error occurred during login." });
+        res.status(500).send({ msg: `you entered Incorrect password ${game.firstname} ` });
 }}
 ////////////////////////getalldata have access only admin/////////////////////////////////////////////////////
 const getAllData = async (req, res) => {    
