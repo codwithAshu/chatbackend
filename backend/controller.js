@@ -46,40 +46,51 @@ const insert = async (req, res) => {
 };
 
 ///////////////////////////api-for-login/////////////////////////////////////////////////
-const login=async(req,res)=>{
-console.log("hye");
-
+const login = async (req, res) => {
+  
     const { email, password } = req.body;
-    
-try {
-        const result = await quirypromise("SELECT * FROM users WHERE email = ?", [email]);
-        console.log("result",result)
-if      (result.length === 0) {
-            return res.status(400).json({ error: "Invalid email" });   
-        }
-        const game = result[0];
-        console.log("game",game);
-        
-        const isMatch = await bcrypt.compare(password, game.password);
-console.log("game.password",password);
-console.log("game.password",game.password);
 
-if      (isMatch) {
-    const token=jwt.sign({
-        username: game.firstname,
-        userId: game.id,
-    },"ashu@123",{ expiresIn: '1h' } )
-   
-//   res.status(200).json({msg:`hey you Login successfully ${game.firstname} `,token:token,userId:game.id});
-    
- res.status(200).send({ msg: `you Login successfully ${game.firstname}`, username: game.userName ,Name:game.firstname});
-    
+    try {
+        // Check if user with the given email exists
+        const result = await quirypromise("SELECT * FROM users WHERE email = ?", [email]);
+
+        if (result.length === 0) {
+            return res.status(400).json({ error: "Invalid email" });
         }
-       
-} catch (err) {
-        console.log("Login error:", err);
-        res.status(500).send({ msg: `you entered Incorrect password ${game.firstname} ` });
-}}
+
+        const user = result[0];
+
+        // Compare entered password with stored hashed password
+        const isMatch = await bcrypt.compare(password, user.password);
+
+        if (isMatch) {
+            // Create JWT token
+            const token = jwt.sign(
+                {
+                    username: user.firstname,
+                    userId: user.id,
+                },
+                "ashu@123",     
+                { expiresIn: '1h' }
+            );
+
+            return res.status(200).json({
+                msg: `you Login successfully ${user.firstname}`,
+                username: user.userName,
+                Name: user.firstname,
+                token,
+            });
+        } else {
+            // Invalid password
+            return res.status(401).json({ msg: "Incorrect password" });
+        }
+
+    } catch (err) {
+        console.error("Login error:", err);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
 ////////////////////////getalldata have access only admin/////////////////////////////////////////////////////
 const getAllData = async (req, res) => {    
     const userId = req.params.id;
