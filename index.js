@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require("express");
 const cors = require("cors");
 const http = require("http");
+const path = require("path");
 const { Server } = require("socket.io");
 
 const app = express();
@@ -22,6 +23,10 @@ app.use(cors(corsOptions));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+// Routes
+const router = require("./backend/routes/router");
+app.use("/", router);
 
 const server = http.createServer(app);
 const io = new Server(server, { cors: corsOptions });
