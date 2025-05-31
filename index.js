@@ -52,6 +52,8 @@ io.on("connection", (socket) => {
     });
   });
 
+  
+
   // Improved message handling
   socket.on('sendMessage', (msg) => {
     const recipient = msg.recipient?.toLowerCase();
@@ -64,6 +66,9 @@ io.on("connection", (socket) => {
       id: Date.now(), // Add unique ID for status tracking
       status: 'delivered' // Immediate delivery status
     };
+
+    io.to(users[recipient]).emit('stopTyping');  
+    
     
     io.to(users[recipient]).emit('sendMessage', messageWithStatus);
     socket.emit('messageStatus', { 
@@ -71,6 +76,19 @@ io.on("connection", (socket) => {
       status: 'delivered' 
     });
   });
+
+  socket.on('messageSeen', (msgId) => {
+    // Find sender from your database/array
+    const msg = findMessageById(msgId); // <-- Ye function aapko banana padega
+    if (msg && users[msg.sender]) {
+      io.to(users[msg.sender]).emit('messageStatus', {
+        id: msgId,
+        status: 'read'  // <-- Status update karo
+      });
+    }
+  });
+  
+
 
   // Typing indicators with validation
   socket.on('typing', (data) => {
@@ -97,6 +115,7 @@ io.on("connection", (socket) => {
     }
   });
 });
+
 
 server.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
