@@ -25,6 +25,13 @@ app.use(express.json());
 
 const server = http.createServer(app);
 const io = new Server(server, { cors: corsOptions });
+// Temporary in-memory storage for messages
+const messages = {};
+
+// Add this function
+function findMessageById(msgId) {
+  return messages[msgId];
+}
 
 let users = {};
 
@@ -60,16 +67,15 @@ io.on("connection", (socket) => {
     if (!recipient || !users[recipient]) {
       return socket.emit('error', 'Recipient not found');
     }
-    
+      // Save message to temporary storage
+  messages[msg.id] = msg;
     const messageWithStatus = {
       ...msg,
-      id: Date.now(), // Add unique ID for status tracking
+    //   id: Date.now(), // Add unique ID for status tracking
       status: 'delivered' // Immediate delivery status
     };
 
     io.to(users[recipient]).emit('stopTyping');  
-    
-    
     io.to(users[recipient]).emit('sendMessage', messageWithStatus);
     socket.emit('messageStatus', { 
       id: messageWithStatus.id, 
@@ -78,10 +84,10 @@ io.on("connection", (socket) => {
   });
 
   socket.on('messageSeen', (msgId) => {
-    // Find sender from your database/array
+    // Find user from your database/array
     const msg = findMessageById(msgId); // <-- Ye function aapko banana padega
-    if (msg && users[msg.sender]) {
-      io.to(users[msg.sender]).emit('messageStatus', {
+    if (msg && users[msg.user]) {
+      io.to(users[msg.user]).emit('messageStatus', {
         id: msgId,
         status: 'read'  // <-- Status update karo
       });
