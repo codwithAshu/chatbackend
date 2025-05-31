@@ -68,6 +68,22 @@ io.on("connection", (socket) => {
     }
   });
 
+
+  socket.on('typing', (data) => {
+    const recipientSocketId = users[data.recipient.toLowerCase()];
+    if (recipientSocketId) {
+      // Notify recipient that sender is typing
+      io.to(recipientSocketId).emit('typing', data.user);
+    }
+  });
+  socket.on('stopTyping', (data) => {
+    const recipientSocketId = users[data.recipient.toLowerCase()];
+    if (recipientSocketId) {
+      // Notify recipient that sender stopped typing
+      io.to(recipientSocketId).emit('stopTyping');
+    }
+  });
+
   socket.on("disconnect", () => {
     // Optional: remove user from users object
     for (let username in users) {
