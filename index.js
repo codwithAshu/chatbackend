@@ -2,13 +2,12 @@ require('dotenv').config();
 const express = require("express");
 const cors = require("cors");
 const http = require("http");
-const path = require("path");
 const { Server } = require("socket.io");
 
 const app = express();
 const PORT = process.env.PORT || 2020;
 
-// CORS config (place early to affect both HTTP and WebSocket)
+// CORS config
 const corsOptions = {
   origin: [
     "*",
@@ -21,82 +20,84 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-// Body parser
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Routes
-const router = require("./backend/routes/router");
-app.use("/", router);
-
-// Create server
 const server = http.createServer(app);
-
-// Socket.io
-const io = new Server(server, {
-  cors: corsOptions
-});
+const io = new Server(server, { cors: corsOptions });
 
 let users = {};
 
-// WebSocket setup
 io.on("connection", (socket) => {
   console.log('🟢 New user connected:', socket.id);
-  socket.emit('welcome', 'Welcome to the chat!');
 
   socket.on('register', (username) => {
     username = username.toLowerCase();
     users[username] = socket.id;
-    console.log('✅ Registered:', username, socket.id);
-
-    // Session timeout simulation
-    setTimeout(() => {
-      if (users[username]) {
-        socket.emit('sessionExpired', 'Your session has expired due to inactivity.');
+    console.log('✅ Registered:', username);
+    
+    // Session timeout
+    const timeout = setTimeout(() => {
+      if (users[username] === socket.id) {
+        socket.emit('sessionExpired', 'Session expired due to inactivity');
         socket.disconnect();
-        console.log(`⚠️ ${username}'s session expired`);
       }
     }, 600000); // 10 minutes
-  });
 
-  socket.on('sendMessage', (msg) => {
-    const recipient = msg.recipient.toLowerCase();
-    const recipientSocketId = users[msg.recipient];
-    console.log("📩 Message from", msg.sender, "to", recipient, ":", msg.text);
-    if (recipientSocketId) {
-      io.to(recipientSocketId).emit('sendMessage', msg);
-    }
-  });
-
-
-  socket.on('typing', (data) => {
-    const recipientSocketId = users[data.recipient.toLowerCase()];
-    if (recipientSocketId) {
-      // Notify recipient that sender is typing
-      io.to(recipientSocketId).emit('typing', data.user);
-    }
-  });
-  socket.on('stopTyping', (data) => {
-    const recipientSocketId = users[data.recipient.toLowerCase()];
-    if (recipientSocketId) {
-      // Notify recipient that sender stopped typing
-      io.to(recipientSocketId).emit('stopTyping');
-    }
-  });
-
-  socket.on("disconnect", () => {
-    // Optional: remove user from users object
-    for (let username in users) {
+    socket.on('disconnect', () => {
+      clearTimeout(timeout);
       if (users[username] === socket.id) {
-        console.log(`🔴 ${username} disconnected`);
         delete users[username];
-        break;
       }
+    });
+  });
+
+  // Improved message handling
+  socket.on('sendMessage', (msg) => {
+    const recipient = msg.recipient?.toLowerCase();
+    if (!recipient || !users[recipient]) {
+      return socket.emit('error', 'Recipient not found');
+    }
+    
+    const messageWithStatus = {
+      ...msg,
+      id: Date.now(), // Add unique ID for status tracking
+      status: 'delivered' // Immediate delivery status
+    };
+    
+    io.to(users[recipient]).emit('sendMessage', messageWithStatus);
+    socket.emit('messageStatus', { 
+      id: messageWithStatus.id, 
+      status: 'delivered' 
+    });
+  });
+
+  // Typing indicators with validation
+  socket.on('typing', (data) => {
+    if (!data?.recipient) return;
+    
+    const recipient = data.recipient.toLowerCase();
+    if (users[recipient]) {
+      io.to(users[recipient]).emit('typing', {
+        user: data.user,
+        isTyping: true
+      });
+    }
+  });
+
+  socket.on('stopTyping', (data) => {
+    if (!data?.recipient) return;
+    
+    const recipient = data.recipient.toLowerCase();
+    if (users[recipient]) {
+      io.to(users[recipient]).emit('typing', {
+        user: data.user,
+        isTyping: false
+      });
     }
   });
 });
 
-// Start HTTP + WebSocket server
 server.listen(PORT, () => {
-  console.log(`🚀 Server and WebSocket listening on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
