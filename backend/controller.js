@@ -20,12 +20,18 @@ const quirypromise=(qs,val)=>{
 ////////////////////////api for getting all data//////////////////////////////////////////////////
 const gettask=async (req,res)=>{
 try{
+   
     const result= await quirypromise("select * from game")
-    res.send(result) 
+    res.json.send({ 
+        server: 'Render', 
+        timestamp: Date.now() 
+      });
+    // res.send(result) 
 }catch(err){            
     console.log("Database query error:",err);
     res.status(500).send({ error: "An error occurred while fetching data." })
 }}
+
 ///////////////////////////////////api-for-insert-data///////////////////////////////////////////////////
 const insert = async (req, res) => {
   const { email, phonenumber, password, fullName, username } = req.body;
