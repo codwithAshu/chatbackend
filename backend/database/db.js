@@ -6,10 +6,10 @@ const util = require("util");
 
 const pool = mysql.createPool({
   connectionLimit: 10,
-  host: "chatdatabase.c3ycw84oclw7.ap-south-1.rds.amazonaws.com",
-  user: "admin",
-  password: "arshdeep-0429",
-  database: "chatdatabase",
+  host: process.env.Host,
+  user: process.env.user,
+  password: process.env.password,
+  database: process.env.database,
   port: 3306,
   connectTimeout: 10000,
   acquireTimeout: 10000,
