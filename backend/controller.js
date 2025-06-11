@@ -62,6 +62,7 @@ const login = async (req, res) => {
         }
 
         const user = result[0];
+console.log("user",user);
 
         // Compare entered password with stored hashed password
         const isMatch = await bcrypt.compare(password, user.password);
@@ -79,7 +80,7 @@ const login = async (req, res) => {
 
             return res.status(200).json({
                 msg: `you Login successfully ${user.firstname}`,
-                username: user.userName,
+                username: user.username,
                 Name: user.firstname,
                 token,
             });
