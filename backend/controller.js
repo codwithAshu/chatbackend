@@ -20,12 +20,9 @@ const quirypromise=(qs,val)=>{
 ////////////////////////api for getting all data//////////////////////////////////////////////////
 const gettask=async (req,res)=>{
 try{
-   
-    const result= await quirypromise("select * from game")
-    res.json.send({ 
-        server: 'Render', 
-        timestamp: Date.now() 
-      });
+ 
+    // const result= await quirypromise("select * from game")
+ 
     // res.send(result) 
 }catch(err){            
     console.log("Database query error:",err);
@@ -37,11 +34,11 @@ const insert = async (req, res) => {
   const { email, phonenumber, password, fullName, username } = req.body;
   const token = jwt.sign({ userName: fullName }, "ashu@123", { expiresIn: '1h' });
   console.log("pass",password);
-  
+    console.log("email",email);
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     await quirypromise(
-      "INSERT INTO users (firstname,email,phonenumber,password, userName ,jwt) VALUES (?, ?, ?, ?,?,?)",
+      "INSERT INTO users (firstname,email,phonenumber,password, username ,jwt) VALUES (?, ?, ?, ?,?,?)",
       [fullName, email, phonenumber, hashedPassword, username, fullName]
     );
     res.status(201).json({ msg: `your account is successfully created ${fullName}` });

@@ -1,6 +1,6 @@
 const express=require("express");
 const router=express.Router()
-const {gettask,login,insert,update,del,getAllData,deletedata,insertroute,insertaccess,displaydata,forgotPassword,resetPassword}=require("../controller")
+const {login,insert,update,del,getAllData,deletedata,insertroute,insertaccess,displaydata,forgotPassword,resetPassword}=require("../controller")
 // const { verifyToken, checkAccessLevel } = require('../middlewares/authMiddleware'); 
 
 router.post("/login",login
@@ -8,7 +8,7 @@ router.post("/login",login
 
 
 )
-router.post("/gettask",gettask)
+
 router.post("/post",insert)
 router.post("/postroute",insertroute)
 router.post("/postaccess",insertaccess)
