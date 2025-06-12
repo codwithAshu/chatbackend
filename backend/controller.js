@@ -52,7 +52,7 @@ const insert = async (req, res) => {
     );
       const phoneNumber="+91"+phonenumber
 const params ={
-message: `Hello ${fullName}, 👋\n\nYour ChatVat account has been successfully created! 🎉\n\n🔐 
+Message: `Hello ${fullName}, 👋\n\nYour ChatVat account has been successfully created! 🎉\n\n🔐 
 *Login Details:*\n📧 Email: **${email}**\n🔑 Password: **${password}**\n\nAfter logging in, 
 enter your friend's username to start chatting.\n\nHappy chatting! 😊\n- Team ChatVat (Created by Ashu)\n📞 For help: 9138444123`,
  PhoneNumber: phoneNumber,
@@ -60,17 +60,12 @@ enter your friend's username to start chatting.\n\nHappy chatting! 😊\n- Team 
 sns.publish(params,(err,data)=>{
     if (err){
       console.error("SMS sending failed:", err);
-          return res.status(500).json({ msg: "Account created, but SMS failed" });
+          return res.status(201).json({ msg: "Account created, but SMS failed" });
     }else{
         console.log("SMS sent successfully:", data);
          return res.status(201).json({ msg: `Your account is successfully created ${fullName}` });
     }
 })
-
-
-
-  
-
   } catch (err) {
     console.error(err);
     res.status(500).json({msg:"may be this user already exist"});
