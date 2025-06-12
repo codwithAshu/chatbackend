@@ -67,7 +67,7 @@ sns.publish(params,(err,data)=>{
     }
 })
 
-    res.status(201).json({ msg: `your account is successfully created ${fullName}` });
+
 
   
 
