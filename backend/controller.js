@@ -2,9 +2,16 @@ require('dotenv').config();
 const queryPromis=require("./database/db")
 const bcrypt = require("bcrypt");
 const jwt=require("jsonwebtoken")
+const AWS =require('aws-sdk')
 
+//aws for notification
+AWS.config.update({
+    accessKeyId:process.env.accessKeyId,
+    secretAccessKey:process.env.secretAccessKey,
+    region:"ap-south-1"
+})
 
-
+const sns = new AWS.SNS();
 //ye phone pe text msg ke liye 
 
 
@@ -35,13 +42,35 @@ const insert = async (req, res) => {
   const token = jwt.sign({ userName: fullName }, "ashu@123", { expiresIn: '1h' });
   console.log("pass",password);
     console.log("email",email);
+    console.log("username",username);
+    
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     await quirypromise(
       "INSERT INTO users (firstname,email,phonenumber,password, username ,jwt) VALUES (?, ?, ?, ?,?,?)",
       [fullName, email, phonenumber, hashedPassword, username, fullName]
     );
+      const phoneNumber="+91"+phonenumber
+const params ={
+message: `Hello ${fullName}, 👋\n\nYour ChatVat account has been successfully created! 🎉\n\n🔐 
+*Login Details:*\n📧 Email: **${email}**\n🔑 Password: **${password}**\n\nAfter logging in, 
+enter your friend's username to start chatting.\n\nHappy chatting! 😊\n- Team ChatVat (Created by Ashu)\n📞 For help: 9138444123`,
+ PhoneNumber: phoneNumber,
+}
+sns.publish(params,(err,data)=>{
+    if (err){
+      console.error("SMS sending failed:", err);
+          return res.status(500).json({ msg: "Account created, but SMS failed" });
+    }else{
+        console.log("SMS sent successfully:", data);
+         return res.status(201).json({ msg: `Your account is successfully created ${fullName}` });
+    }
+})
+
     res.status(201).json({ msg: `your account is successfully created ${fullName}` });
+
+  
+
   } catch (err) {
     console.error(err);
     res.status(500).json({msg:"may be this user already exist"});
@@ -62,7 +91,7 @@ const login = async (req, res) => {
         }
 
         const user = result[0];
-console.log("user",user);
+console.log("userrrrrrrrrrrrrrrrrrrr",user);
 
         // Compare entered password with stored hashed password
         const isMatch = await bcrypt.compare(password, user.password);
@@ -77,6 +106,8 @@ console.log("user",user);
                 "ashu@123",     
                 { expiresIn: '1h' }
             );
+
+
 
             return res.status(200).json({
                 msg: `you Login successfully ${user.firstname}`,
