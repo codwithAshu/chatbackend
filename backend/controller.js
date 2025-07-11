@@ -86,7 +86,6 @@ const login = async (req, res) => {
         }
 
         const user = result[0];
-console.log("userrrrrrrrrrrrrrrrrrrr",user);
 
         // Compare entered password with stored hashed password
         const isMatch = await bcrypt.compare(password, user.password);
@@ -102,6 +101,7 @@ console.log("userrrrrrrrrrrrrrrrrrrr",user);
                 { expiresIn: '1h' }
             );
 
+console.log('you Login successfully');
 
 
             return res.status(200).json({
@@ -110,8 +110,12 @@ console.log("userrrrrrrrrrrrrrrrrrrr",user);
                 Name: user.firstname,
                 token,
             });
+
+            
         } else {
             // Invalid password
+            console.log("Incorrect password");
+            
             return res.status(401).json({ msg: "Incorrect password" });
         }
 
