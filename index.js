@@ -42,11 +42,13 @@ function findMessageById(msgId) {
 let users = {};
 
 io.on("connection", (socket) => {
-  console.log('🟢 New user connected:', socket.id);
+  console.log('🟢 New user connected:', socket.id)
+  console.log('socket'),socket;
+  ;
 
   socket.on('register', (username) => {
     username = username.toLowerCase();
-    users[username] = socket.id;
+    users[username] = socket.id;           //{"arsh": "wheoxnhg34827fhsh"  // this is socket.id}
     console.log('✅ Registered:', username);
     
     // Session timeout
@@ -56,7 +58,7 @@ io.on("connection", (socket) => {
         socket.disconnect();
       }
     }, 600000); // 10 minutes
-
+//it runs when user close the tb or refresh the page or int
     socket.on('disconnect', () => {
       clearTimeout(timeout);
       if (users[username] === socket.id) {
