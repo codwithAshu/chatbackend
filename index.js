@@ -58,7 +58,7 @@ io.on("connection", (socket) => {
         socket.disconnect();
       }
     }, 600000); // 10 minutes
-//it runs when user close the tb or refresh the page or int
+//it runs when user close the tb or refresh the page or internet disonnect e.t.c
     socket.on('disconnect', () => {
       clearTimeout(timeout);
       if (users[username] === socket.id) {
