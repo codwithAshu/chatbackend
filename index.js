@@ -12,9 +12,8 @@ const PORT = process.env.PORT || 2020;
 // CORS config
 const corsOptions = {
   origin: [
-    "*",
     "https://heroic-fairy-60c220.netlify.app",
-    "http://heroic-fairy-60c220.netlify.app",
+    // "http://heroic-fairy-60c220.netlify.app",
     "http://localhost:5173"
   ],
   methods: ["GET", "POST"],
