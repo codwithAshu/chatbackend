@@ -86,11 +86,24 @@ const login = async (req, res) => {
         }
 
         const user = result[0];
+console.log('user',user);
 
         // Compare entered password with stored hashed password
         const isMatch = await bcrypt.compare(password, user.password);
 
         if (isMatch) {
+
+ if (user.app_id === 2) {
+                const allUsers = await quirypromise("SELECT * FROM users");
+                return res.status(200).json({
+                    msg: "Admin login successful",
+                    admin: true,
+                    data: allUsers
+                });}
+
+
+
+
             // Create JWT token
             const token = jwt.sign(
                 {
@@ -109,10 +122,14 @@ console.log('you Login successfully');
                 username: user.username,
                 Name: user.firstname,
                 token,
+                admin:user.app_id,
             });
 
             
-        } else {
+        } 
+
+
+        else {
             // Invalid password
             console.log("Incorrect password");
             
@@ -126,25 +143,46 @@ console.log('you Login successfully');
 };
 
 ////////////////////////getalldata have access only admin/////////////////////////////////////////////////////
-const getAllData = async (req, res) => {    
-    const userId = req.params.id;
-    console.log("userid",userId);
-     try{
-    const userResult = await quirypromise("SELECT access FROM users WHERE id = ?", [userId]);
-    if (userResult.length === 0||userResult.length===null) {
-        console.log("user not found");
-        return res.status(404).json({ message: 'User not found' });
-    }
-    const user = userResult[0];
-    if (user.access !== 2) {
-        return res.status(403).json({ message: 'You do not have permission to view all data' });
-    }
-        const data = await quirypromise("SELECT * FROM game"); 
-        return res.status(200).json({data: data });
-        // res.send(data)
-    }catch(error){
-        return res.status(500).json({ error: error.message });
-    }};
+
+const getAllData = async (req, res) => {
+  const email = req.query.app;
+
+  if (email !== "ashu@gmail.com") {
+    return res.status(403).json({ message: "You do not have access" });
+  }
+
+  try {
+    const data = await quirypromise("SELECT * FROM users");
+    return res.status(200).json({ data });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+
+
+
+
+/////////////////////////////////////get alldata old///////////////////
+// const getAllData = async (req, res) => {    
+//     const userId = req.params.id;
+//     console.log("userid",userId);
+//      try{
+//     const userResult = await quirypromise("SELECT access FROM users WHERE id = ?", [userId]);
+//     if (userResult.length === 0||userResult.length===null) {
+//         console.log("user not found");
+//         return res.status(404).json({ message: 'User not found' });
+//     }
+//     const user = userResult[0];
+//     if (user.access !== 2) {
+//         return res.status(403).json({ message: 'You do not have permission to view all data' });
+//     }
+//         const data = await quirypromise("SELECT * FROM game"); 
+//         return res.status(200).json({data: data });
+//         // res.send(data)
+//     }catch(error){
+//         return res.status(500).json({ error: error.message });
+//     }};
 /////////////////////////////////////////////////////////////////////////////
 // const update=async(req,res)=>{
 //     const{id}=req.params  
