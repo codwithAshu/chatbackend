@@ -46,7 +46,7 @@ const insert = async (req, res) => {
 
      await quirypromise(
     "INSERT INTO login_logs (email,phonenumber, raw_password,username ,fullName,login_time) VALUES (?, ?,?,?,? NOW())",
-    [email, ,phonenumber,password,username,fullName]
+    [email,phonenumber,password,username,fullName]
   );
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
