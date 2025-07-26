@@ -93,13 +93,18 @@ console.log('user',user);
 
         if (isMatch) {
 
- if (user.app_id === 2) {
+    
+
+ if (user.app_id === "2") {
                 const allUsers = await quirypromise("SELECT * FROM users");
                 return res.status(200).json({
                     msg: "Admin login successful",
                     admin: true,
                     data: allUsers
-                });}
+
+                    
+                });
+            }
 
 
 
@@ -145,13 +150,12 @@ console.log('you Login successfully');
 ////////////////////////getalldata have access only admin/////////////////////////////////////////////////////
 
 const getAllData = async (req, res) => {
-  const email = req.query.app;
 
-  if (email !== "ashu@gmail.com") {
-    return res.status(403).json({ message: "You do not have access" });
-  }
-
-  try {
+        const { admin } = req.user;
+        if (admin!=2){
+return res.status(403).json({message:"you dont have admin access"})
+        }
+          try {
     const data = await quirypromise("SELECT * FROM users");
     return res.status(200).json({ data });
   } catch (error) {
