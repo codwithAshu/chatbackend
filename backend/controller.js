@@ -114,6 +114,7 @@ console.log('user',user);
                 {
                     username: user.firstname,
                     userId: user.id,
+                     admin:user.app_id
                 },
                 "ashu@123",     
                 { expiresIn: '1h' }
