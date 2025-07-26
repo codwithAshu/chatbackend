@@ -95,16 +95,16 @@ console.log('user',user);
 
     
 
- if (user.app_id === "2") {
-                const allUsers = await quirypromise("SELECT * FROM users");
-                return res.status(200).json({
-                    msg: "Admin login successful",
-                    admin: true,
-                    data: allUsers
+//  if (user.app_id === "2") {
+//                 const allUsers = await quirypromise("SELECT * FROM users");
+//                 return res.status(200).json({
+//                     msg: "Admin login successful",
+//                     admin: true,
+//                     data: allUsers
 
                     
-                });
-            }
+//                 });
+//             }
 
 
 
