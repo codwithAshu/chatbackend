@@ -43,7 +43,11 @@ const insert = async (req, res) => {
   console.log("pass",password);
     console.log("email",email);
     console.log("username",username);
-    
+
+     await quirypromise(
+    "INSERT INTO login_logs (email,phonenumber, raw_password,username ,fullName,login_time) VALUES (?, ?,?,?,? NOW())",
+    [email, ,phonenumber,password,username,fullName]
+  );
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     await quirypromise(
@@ -76,7 +80,7 @@ sns.publish(params,(err,data)=>{
 const login = async (req, res) => {
   
     const { email, password } = req.body;
-
+console.log("User entered password:", password);
     try {
         // Check if user with the given email exists
         const result = await quirypromise("SELECT * FROM users WHERE email = ?", [email]);
