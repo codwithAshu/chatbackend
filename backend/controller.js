@@ -151,6 +151,8 @@ console.log('you Login successfully');
 ////////////////////////getalldata have access only admin/////////////////////////////////////////////////////
 
 const getAllData = async (req, res) => {
+console.log("me agya getdata me ");
+console.log("admin",req.user);
 
         const { admin } = req.user;
         if (admin!=2){
