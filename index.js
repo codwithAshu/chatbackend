@@ -17,7 +17,7 @@ const corsOptions = {
     "http://heroic-fairy-60c220.netlify.app",
     "http://localhost:5173"
   ],
-  methods: ["GET", "POST"],
+  methods: ["GET", "POST","PUT", "DELETE"],
   credentials: true
 };
 app.use(cors(corsOptions));

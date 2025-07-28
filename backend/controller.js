@@ -166,40 +166,19 @@ return res.status(403).json({message:"you dont have admin access"})
 
 
 /////////////////////////////////////get alldata old///////////////////
-// const getAllData = async (req, res) => {    
-//     const userId = req.params.id;
-//     console.log("userid",userId);
-//      try{
-//     const userResult = await quirypromise("SELECT access FROM users WHERE id = ?", [userId]);
-//     if (userResult.length === 0||userResult.length===null) {
-//         console.log("user not found");
-//         return res.status(404).json({ message: 'User not found' });
-//     }
-//     const user = userResult[0];
-//     if (user.access !== 2) {
-//         return res.status(403).json({ message: 'You do not have permission to view all data' });
-//     }
-//         const data = await quirypromise("SELECT * FROM game"); 
-//         return res.status(200).json({data: data });
-//         // res.send(data)
-//     }catch(error){
-//         return res.status(500).json({ error: error.message });
-//     }};
-/////////////////////////////////////////////////////////////////////////////
-// const update=async(req,res)=>{
-//     const{id}=req.params  
-// const{firstname,lastname,phonenumber ,email,access}=req.body
-// console.log("reqbody",req.body);
-// try {
-//     const query = 'UPDATE game SET firstname=?, lastname=? ,email = ?,phonenumber=?,access=? WHERE id = ?';
-//   const result= await quirypromise(query, [ firstname,lastname, email,phonenumber,access, id])
-//       if (result.affectedRows === 0) {
-//         return res.status(404).json({ message: 'User not found' });
-//       }
-//       return res.status(200).json({ success: true, message: 'Profile updated successfully' });
-// } catch (error) {
-//     return res.status(500).json({ error: error.message });
-// }}
+const edit = async (req, res) => {    
+   const userId = req.params.id;
+  const { app_id } = req.body;
+try{
+   const edit= await queryPromis("UPDATE users SET app_id = ? WHERE id = ?", [app_id, userId])
+   res.status(200).json(
+{ message: "Access updated successfully" }
+   )
+
+}catch(err){
+ res.status(500).json({ error: "Something went wrong" });
+}
+}
 ////////////////////////////////////////////////////////////////////////
 const update=async(req,res)=>{
     const{id}=req.params  
@@ -393,7 +372,7 @@ console.log("user",user);
  ///////////////////////////////////////////////////////////////////
 
 
-module.exports={gettask,login,insert,update,del,getAllData,insertroute,insertaccess,displaydata,forgotPassword,resetPassword}
+module.exports={gettask,login,insert,update,del,getAllData,edit,insertroute,insertaccess,displaydata,forgotPassword,resetPassword}
 // const addaccess=async(req,res)=>{
 //     const{userIdsexclude}=req.body
 
