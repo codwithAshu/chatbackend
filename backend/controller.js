@@ -96,23 +96,14 @@ console.log('user',user);
         const isMatch = await bcrypt.compare(password, user.password);
 
         if (isMatch) {
-
-    
-
 //  if (user.app_id === "2") {
 //                 const allUsers = await quirypromise("SELECT * FROM users");
 //                 return res.status(200).json({
 //                     msg: "Admin login successful",
 //                     admin: true,
-//                     data: allUsers
-
-                    
+//                     data: allUsers    
 //                 });
 //             }
-
-
-
-
             // Create JWT token
             const token = jwt.sign(
                 {
