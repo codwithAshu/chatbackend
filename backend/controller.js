@@ -51,7 +51,7 @@ const insert = async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     await quirypromise(
-      "INSERT INTO users (firstname,email,phonenumber,password, username ,jwt) VALUES (?, ?, ?, ?,?,?)",
+      "INSERT INTO users (firstname,email,phonenumber,password, username ,app_id) VALUES (?, ?, ?, ?,?,1)",
       [fullName, email, phonenumber, hashedPassword, username, fullName]
     );
       const phoneNumber="+91"+phonenumber
