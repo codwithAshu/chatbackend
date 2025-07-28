@@ -240,6 +240,8 @@ try {
 ///////////////////////////////////////////////////////////////////////////////////////////////
 const del=async(req,res)=>{  
     const { id } = req.params;
+    console.log("delet me ");
+    
 try {
     const userResult = await quirypromise("SELECT * FROM users WHERE id = ?", [id]);
 if   (userResult.length === 0) {
@@ -247,18 +249,18 @@ if   (userResult.length === 0) {
 }
     const user = userResult[0];
   
-    const name = user.firstname; 
-    const phonenumber = `91${user.phonenumber}`; 
-    const phonenumberInt = parseInt(phonenumber, 10);    
-if  (!phonenumberInt) {
-        return res.status(400).json({ message: 'User does not have a phone number associated with their account' });
-}
+//     const name = user.firstname; 
+//     const phonenumber = `91${user.phonenumber}`; 
+//     const phonenumberInt = parseInt(phonenumber, 10);    
+// if  (!phonenumberInt) {
+//         return res.status(400).json({ message: 'User does not have a phone number associated with their account' });
+// }
 /////for msg connection///////
-    const message = await client.messages.create({
-        body: `Dear ${name},\n\n We would like to inform you that your account will be deleted shortly by an admin.\n\nBest regards, The Admin Team.`,
-        to: `+${phonenumberInt}`,  
-        from: '+13203563459'  
-    });
+    // const message = await client.messages.create({
+    //     body: `Dear ${name},\n\n We would like to inform you that your account will be deleted shortly by an admin.\n\nBest regards, The Admin Team.`,
+    //     to: `+${phonenumberInt}`,  
+    //     from: '+13203563459'  
+    // });
 ///////////
     const deleteResult = await quirypromise("DELETE FROM users WHERE id=?", [id]);
 if   (deleteResult.affectedRows === 0) {

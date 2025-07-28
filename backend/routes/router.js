@@ -17,7 +17,7 @@ router.post("/displaydata/:id",displaydata)
 
 router.put("/updateprofile/:id",update)
 
-router.delete("/:id",del)
+// router.delete("/:id",del)
 // router.post("/get-all-data/:id",getAllData)
 router.post("/get-all-data/",verifyToken,getAllData)
 router.delete("/delete-data/:id",del)
